@@ -88,16 +88,16 @@ class HomeViewController: UIViewController {
         let resultsController = LocationSearchResultController()
         searchController = UISearchController(searchResultsController: resultsController)
         searchController.searchResultsUpdater = resultsController
+        resultsController.delegate = self
         
         let searchBarTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField
         searchBarTextField?.placeholder = "search another location"
         searchBarTextField?.backgroundColor = .white
         searchController.searchBar.delegate = self
-        searchController.searchBar.returnKeyType = .done
+        searchController.searchBar.returnKeyType = .search
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "Cancel"
         
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.dimsBackgroundDuringPresentation = true
         navigationItem.titleView = searchController.searchBar
         navigationController?.navigationBar.backgroundColor = .systemPurple
         definesPresentationContext = true
@@ -111,11 +111,6 @@ extension HomeViewController: UISearchBarDelegate {
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         navigationController?.navigationBar.barTintColor = .systemPurple
-        
-        if let resultsVC = searchController.searchResultsController as? LocationSearchResultController {
-            resultsVC.delegate = self
-        }
-        
         return true
     }
     
@@ -145,6 +140,6 @@ extension HomeViewController: MKLocalSearchCompleterDelegate {
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        print("failed with error: \(error)")
+        print("failed with update the results: \(error)")
     }
 }

@@ -43,6 +43,7 @@ class PermissionCoordinator: NSObject, Coordinator {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
             locationManager.startUpdatingLocation()
+
             let nav = UINavigationController(rootViewController: HomeViewController())
             nav.modalPresentationStyle = .fullScreen
             controller.present(nav, animated: true)
@@ -61,6 +62,7 @@ extension PermissionCoordinator: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else { return }
         storeLocation(currentLocation)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "updateLocationWeather"), object: nil)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

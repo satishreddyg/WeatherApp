@@ -30,6 +30,7 @@ final class TodayWeatherView: UIView {
         setUpContentView()
         addConstraints()
         updateUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name(rawValue: "updateLocationWeather"), object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -61,7 +62,7 @@ final class TodayWeatherView: UIView {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         viewModel.getTodayWeather { [weak self] (todayWeather, error) in
             guard let self = self,
                 let weather = todayWeather else { return }

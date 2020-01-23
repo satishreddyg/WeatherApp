@@ -37,12 +37,10 @@ class LocationSearchResultController: UITableViewController {
     // MARK: Table View Delegate
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = results[indexPath.row].title
+        let request = MKLocalSearch.Request(completion: results[indexPath.row])
         let localSearch = MKLocalSearch(request: request)
-        guard !localSearch.isSearching else { return }
-        localSearch.start { (response, error) -> Void in
-            guard error == nil,
+        localSearch.start { [weak self] (response, error) -> Void in
+            guard let self = self, error == nil,
                 let placemark = response?.mapItems.first?.placemark else { return }
             self.delegate?.didSelectLocation(with: placemark)
         }
@@ -50,13 +48,10 @@ class LocationSearchResultController: UITableViewController {
 }
 
 // MARK: Search Results Updating
+
 extension LocationSearchResultController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         tableView.reloadData()
-        
-        if searchController.isActive {
-            searchController.searchResultsController?.view.isHidden = false
-        }
     }
 }
 
